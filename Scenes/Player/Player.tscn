@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://buyxkfhfv3q5m"]
+
+[ext_resource type="Script" uid="uid://tidy1g77t66p" path="res://Scenes/Player/MouseComponent.cs" id="1_s0eop"]
+[ext_resource type="Script" uid="uid://bhigoqqa0s56j" path="res://Scenes/Player/JumpComponent.cs" id="2_ft8w5"]
+[ext_resource type="Script" uid="uid://td80mtn30rmw" path="res://Scenes/Player/MoveComponent.cs" id="3_h54ih"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qbkls"]
+height = 1.8
+
+[node name="Player" type="CharacterBody3D" unique_id=219798193]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1170711968]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_qbkls")
+
+[node name="Head" type="Node3D" parent="." unique_id=466840825]
+
+[node name="Camera3D" type="Camera3D" parent="Head" unique_id=467310614]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
+
+[node name="Components" type="Node" parent="." unique_id=154801447]
+
+[node name="MouseComponent" type="Node" parent="Components" unique_id=670002758 node_paths=PackedStringArray("head", "camera")]
+script = ExtResource("1_s0eop")
+head = NodePath("../../Head")
+camera = NodePath("../../Head/Camera3D")
+
+[node name="JumpComponent" type="Node" parent="Components" unique_id=287186137 node_paths=PackedStringArray("player")]
+script = ExtResource("2_ft8w5")
+player = NodePath("../..")
+
+[node name="MoveComponent" type="Node" parent="Components" unique_id=1127162343 node_paths=PackedStringArray("player", "head")]
+script = ExtResource("3_h54ih")
+player = NodePath("../..")
+head = NodePath("../../Head")
