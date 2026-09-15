@@ -2,23 +2,11 @@ using Godot;
 
 public partial class MoveComponent : Node
 {
-    private Vector2 _inputDirection;
-    private float _speed = 8f;
-
     [Export]
-    private CharacterBody3D player;
+    private Player player;
 
     [Export]
     private Node3D head;
-
-    [Export]
-    private float sprintSpeed = 8f;
-
-    [Export]
-    private float walkSpeed = 4f;
-
-    [Export]
-    private float sneakSpeed = 2f;
 
     [Export]
     private float acceleration = 40f;
@@ -31,21 +19,10 @@ public partial class MoveComponent : Node
 
     public override void _PhysicsProcess(double delta)
     {
-        if (Input.IsActionPressed("Walking"))
-        {
-            _speed = walkSpeed;
-        } else if (Input.IsActionPressed("Sneaking"))
-        {
-            _speed = sneakSpeed;
-        } else
-        {
-            _speed = sprintSpeed;
-        }
+        player.InputDirection = Input.GetVector("MoveLeft", "MoveRight", "MoveForward", "MoveBack");
+        Vector3 direction = (head.Transform.Basis * new Vector3(player.InputDirection.X, 0, player.InputDirection.Y)).Normalized();
 
-        _inputDirection = Input.GetVector("MoveLeft", "MoveRight", "MoveForward", "MoveBack");
-        Vector3 direction = (head.Transform.Basis * new Vector3(_inputDirection.X, 0, _inputDirection.Y)).Normalized();
-
-        Vector3 targetVelocity = direction * _speed;
+        Vector3 targetVelocity = direction * player.Speed;
         Vector3 horisontalVelocity = new Vector3(player.Velocity.X, 0, player.Velocity.Z);
 
         if (player.IsOnFloor())

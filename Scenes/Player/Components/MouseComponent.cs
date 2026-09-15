@@ -6,7 +6,7 @@ public partial class MouseComponent : Node
     private float lookSensitivity = 0.005f;
 
     [Export]
-    private Node3D head;
+    private Node3D CameraController;
 
     [Export]
     private Camera3D camera;
@@ -20,7 +20,7 @@ public partial class MouseComponent : Node
     {
         if (@event is InputEventMouseMotion inputEvent && Input.MouseMode == Input.MouseModeEnum.Captured) 
         {
-            head.RotateY(-inputEvent.Relative.X * lookSensitivity);
+            CameraController.RotateY(-inputEvent.Relative.X * lookSensitivity);
             camera.RotateX(-inputEvent.Relative.Y * lookSensitivity);
 
             Vector3 cameraRotation = camera.Rotation;

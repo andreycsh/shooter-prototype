@@ -3,7 +3,7 @@ using Godot;
 public partial class JumpComponent : Node
 {
     [Export]
-    private CharacterBody3D player;
+    private Player player;
 
     [Export]
     private float jumpVelocity = 4.5f;
