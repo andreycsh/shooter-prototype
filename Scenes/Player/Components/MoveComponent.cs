@@ -6,9 +6,6 @@ public partial class MoveComponent : Node
     private Player player;
 
     [Export]
-    private Node3D head;
-
-    [Export]
     private float acceleration = 40f;
 
     [Export]
@@ -20,7 +17,7 @@ public partial class MoveComponent : Node
     public override void _PhysicsProcess(double delta)
     {
         player.InputDirection = Input.GetVector("MoveLeft", "MoveRight", "MoveForward", "MoveBack");
-        Vector3 direction = (head.Transform.Basis * new Vector3(player.InputDirection.X, 0, player.InputDirection.Y)).Normalized();
+        Vector3 direction = (player.Transform.Basis * new Vector3(player.InputDirection.X, 0, player.InputDirection.Y)).Normalized();
 
         Vector3 targetVelocity = direction * player.Speed;
         Vector3 horisontalVelocity = new Vector3(player.Velocity.X, 0, player.Velocity.Z);

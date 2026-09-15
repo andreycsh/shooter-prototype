@@ -6,5 +6,7 @@ public enum PlayerNodeStates
     SneakState,
     TackleState,
     StandingState,
-    CrouchingState
+    CrouchingState,
+    GroundedState,
+    AirbornState
 }

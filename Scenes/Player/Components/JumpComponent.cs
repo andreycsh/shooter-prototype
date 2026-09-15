@@ -5,9 +5,6 @@ public partial class JumpComponent : Node
     [Export]
     private Player player;
 
-    [Export]
-    private float jumpVelocity = 4.5f;
-
     public override void _PhysicsProcess(double delta)
     {
         if (!player.IsOnFloor())
@@ -18,10 +15,24 @@ public partial class JumpComponent : Node
         if(Input.IsActionJustPressed("Jump") && player.IsOnFloor())
         {
             Vector3 playerVelocity = player.Velocity;
-            playerVelocity.Y = jumpVelocity;
+            playerVelocity.Y = player.JumpVelocity;
             player.Velocity = playerVelocity;
         }
 
         player.MoveAndSlide();
+    }
+
+    
+    public bool CheckfallSpeed()
+    {
+        if (player.CurrentFallVelocity < player.FallVelocityThreshold)
+        {
+            player.CurrentFallVelocity = 0f;
+            return true;
+        } else
+        {
+            player.CurrentFallVelocity = 0f;
+            return false;
+        }
     }
 }

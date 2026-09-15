@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://buyxkfhfv3q5m"]
 
-[ext_resource type="Script" uid="uid://tidy1g77t66p" path="res://Scenes/Player/Components/MouseComponent.cs" id="1_s0eop"]
+[ext_resource type="Script" uid="uid://tidy1g77t66p" path="res://Scenes/Player/Components/CameraComponent.cs" id="1_s0eop"]
 [ext_resource type="Script" uid="uid://dadrm3fkx4d36" path="res://Scenes/Player/Player.cs" id="1_ude3g"]
 [ext_resource type="Script" uid="uid://dvmpbpe6kqxsy" path="res://Scenes/Player/CameraController.cs" id="2_epg6k"]
 [ext_resource type="Script" uid="uid://bhigoqqa0s56j" path="res://Scenes/Player/Components/JumpComponent.cs" id="2_ft8w5"]
@@ -14,6 +14,8 @@
 [ext_resource type="Script" uid="uid://bn5dhqp84xj34" path="res://Scenes/Player/StateMachine/SneakState.cs" id="9_825xp"]
 [ext_resource type="Script" uid="uid://dx5ysyarl6hqx" path="res://Scenes/Player/StateMachine/StandingState.cs" id="10_0kmp4"]
 [ext_resource type="Script" uid="uid://bs74rx2s6rdno" path="res://Scenes/Player/StateMachine/CrouchingState.cs" id="11_i5acl"]
+[ext_resource type="Script" uid="uid://chwdwe2bpxf6v" path="res://Scenes/Player/StateMachine/GroundedState.cs" id="15_6tu5v"]
+[ext_resource type="Script" uid="uid://bojolpkr85fqp" path="res://Scenes/Player/StateMachine/AirbornState.cs" id="16_spxdj"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qbkls"]
 radius = 0.45
@@ -24,12 +26,15 @@ height = 1.8
 [sub_resource type="SphereShape3D" id="SphereShape3D_ostoq"]
 radius = 0.45
 
-[node name="Player" type="CharacterBody3D" unique_id=219798193 node_paths=PackedStringArray("StandingCollision", "CrouchingCollision", "PlayerShapeCast", "PlayerCameraController")]
+[node name="Player" type="CharacterBody3D" unique_id=219798193 node_paths=PackedStringArray("StandingCollision", "CrouchingCollision", "PlayerShapeCast", "PlayerCameraController", "PlayerCameraComponent", "PlayerInteractionRaycast", "PlayerJumpComponent")]
 script = ExtResource("1_ude3g")
 StandingCollision = NodePath("StandingCollision")
 CrouchingCollision = NodePath("CrouchingCollision")
 PlayerShapeCast = NodePath("ShapeCast3D")
 PlayerCameraController = NodePath("CameraController")
+PlayerCameraComponent = NodePath("Components/CameraComponent")
+PlayerInteractionRaycast = NodePath("CameraController/Camera3D/InteractionRaycast")
+PlayerJumpComponent = NodePath("Components/JumpComponent")
 
 [node name="StandingCollision" type="CollisionShape3D" parent="." unique_id=1170711968]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
@@ -56,54 +61,67 @@ script = ExtResource("3_0u84n")
 
 [node name="Components" type="Node" parent="." unique_id=154801447]
 
-[node name="MouseComponent" type="Node" parent="Components" unique_id=670002758 node_paths=PackedStringArray("CameraController", "camera")]
+[node name="CameraComponent" type="Node" parent="Components" unique_id=670002758 node_paths=PackedStringArray("player", "camera")]
 script = ExtResource("1_s0eop")
-CameraController = NodePath("../../CameraController")
+player = NodePath("../..")
 camera = NodePath("../../CameraController/Camera3D")
 
 [node name="JumpComponent" type="Node" parent="Components" unique_id=287186137 node_paths=PackedStringArray("player")]
 script = ExtResource("2_ft8w5")
 player = NodePath("../..")
 
-[node name="MoveComponent" type="Node" parent="Components" unique_id=1127162343 node_paths=PackedStringArray("player", "head")]
+[node name="MoveComponent" type="Node" parent="Components" unique_id=1127162343 node_paths=PackedStringArray("player")]
 script = ExtResource("3_h54ih")
 player = NodePath("../..")
-head = NodePath("../../CameraController")
 
 [node name="PostureComponent" type="Node" parent="Components" unique_id=275296936 node_paths=PackedStringArray("player")]
 script = ExtResource("5_i5acl")
 player = NodePath("../..")
 
-[node name="MovementStateMachine" type="Node" parent="." unique_id=1917154939 node_paths=PackedStringArray("initialNodeState")]
+[node name="StateMachine" type="Node" parent="." unique_id=1912897067]
+
+[node name="MovementStateMachine" type="Node" parent="StateMachine" unique_id=1917154939 node_paths=PackedStringArray("initialNodeState")]
 script = ExtResource("5_4wape")
 initialNodeState = NodePath("IdleState")
 
-[node name="IdleState" type="Node" parent="MovementStateMachine" unique_id=38888372 node_paths=PackedStringArray("player")]
+[node name="IdleState" type="Node" parent="StateMachine/MovementStateMachine" unique_id=38888372 node_paths=PackedStringArray("player")]
 script = ExtResource("5_jmcll")
-player = NodePath("../..")
+player = NodePath("../../..")
 
-[node name="MoveState" type="Node" parent="MovementStateMachine" unique_id=217075185 node_paths=PackedStringArray("player")]
+[node name="MoveState" type="Node" parent="StateMachine/MovementStateMachine" unique_id=217075185 node_paths=PackedStringArray("player")]
 script = ExtResource("7_t26db")
-player = NodePath("../..")
+player = NodePath("../../..")
 
-[node name="WalkState" type="Node" parent="MovementStateMachine" unique_id=163693214 node_paths=PackedStringArray("player")]
+[node name="WalkState" type="Node" parent="StateMachine/MovementStateMachine" unique_id=163693214 node_paths=PackedStringArray("player")]
 script = ExtResource("8_fk5o5")
-player = NodePath("../..")
+player = NodePath("../../..")
 
-[node name="SneakState" type="Node" parent="MovementStateMachine" unique_id=1467433464 node_paths=PackedStringArray("player")]
+[node name="SneakState" type="Node" parent="StateMachine/MovementStateMachine" unique_id=1467433464 node_paths=PackedStringArray("player")]
 script = ExtResource("9_825xp")
-player = NodePath("../..")
+player = NodePath("../../..")
 
-[node name="PostureStateMachine" type="Node" parent="." unique_id=1716548055 node_paths=PackedStringArray("initialNodeState")]
+[node name="PostureStateMachine" type="Node" parent="StateMachine" unique_id=1716548055 node_paths=PackedStringArray("initialNodeState")]
 script = ExtResource("5_4wape")
 initialNodeState = NodePath("StandingState")
 
-[node name="StandingState" type="Node" parent="PostureStateMachine" unique_id=792783119 node_paths=PackedStringArray("player", "postureComponent")]
+[node name="StandingState" type="Node" parent="StateMachine/PostureStateMachine" unique_id=792783119 node_paths=PackedStringArray("player", "postureComponent")]
 script = ExtResource("10_0kmp4")
-player = NodePath("../..")
-postureComponent = NodePath("../../Components/PostureComponent")
+player = NodePath("../../..")
+postureComponent = NodePath("../../../Components/PostureComponent")
 
-[node name="CrouchingState" type="Node" parent="PostureStateMachine" unique_id=121142247 node_paths=PackedStringArray("player", "postureComponent")]
+[node name="CrouchingState" type="Node" parent="StateMachine/PostureStateMachine" unique_id=121142247 node_paths=PackedStringArray("player", "postureComponent")]
 script = ExtResource("11_i5acl")
-player = NodePath("../..")
-postureComponent = NodePath("../../Components/PostureComponent")
+player = NodePath("../../..")
+postureComponent = NodePath("../../../Components/PostureComponent")
+
+[node name="GroundedStateMachine" type="Node" parent="StateMachine" unique_id=1725529115 node_paths=PackedStringArray("initialNodeState")]
+script = ExtResource("5_4wape")
+initialNodeState = NodePath("GroundedState")
+
+[node name="GroundedState" type="Node" parent="StateMachine/GroundedStateMachine" unique_id=1548906736 node_paths=PackedStringArray("player")]
+script = ExtResource("15_6tu5v")
+player = NodePath("../../..")
+
+[node name="AirbornState" type="Node" parent="StateMachine/GroundedStateMachine" unique_id=466942580 node_paths=PackedStringArray("player")]
+script = ExtResource("16_spxdj")
+player = NodePath("../../..")
