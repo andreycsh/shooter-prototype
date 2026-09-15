@@ -15,7 +15,21 @@ public partial class CameraComponent : Node
     [ExportCategory("Camera Effects")]
     [Export]
     private bool enableTilt = true;
+
+    [Export]
     private bool enableFallKick = true;
+
+    [Export]
+    private bool enableDamageKick = true;
+
+    [Export]
+    private bool enableWeaponKick = true;
+
+    [Export]
+    private bool enableScreenShake = true;
+
+    [Export]
+    private bool enableHeadbob = true;
 
     [ExportCategory("Kick & Recoil Setting")]
     [ExportGroup("Run Tilt")]
@@ -36,8 +50,46 @@ public partial class CameraComponent : Node
     [Export]
     private float fallTime = 0.3f;
 
+    [ExportSubgroup("DamageKick")]
+    [Export]
+    private float damageTime = 0.3f;
+
+    [ExportSubgroup("WeaponKick")]
+    [Export]
+    private float weaponDecay = 0.5f;
+
+    [ExportSubgroup("Headbob")]
+    [Export(PropertyHint.Range, "0.0, 0.1, 0.01")]
+    private float bobPitch = 0.05f;
+
+    [Export(PropertyHint.Range, "0.0, 0.1, 0.01")]
+    private float bobRoll = 0.025f;
+
+    [Export(PropertyHint.Range, "0.0, 0.04, 0.01")]
+    private float bobUp = 0.005f;
+
+    [Export(PropertyHint.Range, "3.0, 8.0, 0.1")]
+    private float bobFrequency = 6.0f;
+
+    // Fall kick params
     private float fallValue = 0.0f;
-    private float fallTImer = 0.0f;
+    private float fallTimer = 0.0f;
+
+    // Damage kick params
+    private float damagePitch = 0f;
+    private float damageRoll = 0f;
+    private float damageTimer = 0f;
+
+    // Weapon kick params
+    private Vector3 weaponKickAngles = Vector3.Zero;
+
+    // Screen shake params
+    private Tween screenShakeTween;
+    private const float MIN_SCREEN_SHAKE = 0.05f;
+    private const float MAX_SCREEN_SHAKE = 0.5f;
+
+    // Headbob params
+    private float stepTimer = 0.0f;
 
     public override void _Ready()
     {
@@ -79,9 +131,25 @@ public partial class CameraComponent : Node
             return;
         }
 
-        fallTImer -= (float)delta;
+        fallTimer -= (float)delta;
+        damageTimer -= (float)delta;
 
         Vector3 playerVelocity = player.Velocity;
+
+        // headbob speed and timer value
+        float speed = new Vector2(playerVelocity.X, playerVelocity.Z).Length();
+        if (speed > 0.1 && player.IsOnFloor())
+        {
+            stepTimer += (float)delta * (speed / bobFrequency);
+            // stepTimer = (float)Mathf.PosMod(stepTimer, 1.0);
+            stepTimer = stepTimer % 1.0f;
+        }
+        else
+        {
+            stepTimer = 0.0f;
+        }
+
+        float bobSin = (float)Mathf.Sin(stepTimer * 2.0 * Mathf.Pi) * 0.5f;
 
         Vector3 angles = Vector3.Zero;
         Vector3 offset = Vector3.Zero;
@@ -100,12 +168,38 @@ public partial class CameraComponent : Node
             float sideTilt = Mathf.Clamp(rightDot * Mathf.DegToRad(runRoll), Mathf.DegToRad(-maxRoll), Mathf.DegToRad(maxRoll));
             angles.Z -= sideTilt;
         }
+
         if (enableFallKick)
         {
-            float fallRatio = Mathf.Max(0.0f, fallTImer/ fallTime);
+            float fallRatio = Mathf.Max(0.0f, fallTimer / fallTime);
             float fallKickAmount = fallRatio * fallValue;
             angles.X -= fallKickAmount;
             offset.Y -= fallKickAmount;
+        }
+
+        if (enableDamageKick)
+        {
+            float damageRatio = Mathf.Max(0.0f, damageTimer / damageTime);
+            angles.X += damageRatio * damagePitch;
+            angles.Z += damageRatio * damageRoll;
+        }
+
+        if (enableWeaponKick)
+        {
+            weaponKickAngles = weaponKickAngles.MoveToward(Vector3.Zero, weaponDecay * (float)delta);
+            angles += weaponKickAngles;
+        }
+
+        if (enableHeadbob)
+        {
+            float pitchDelta = bobSin * Mathf.DegToRad(bobPitch) * speed;
+            angles.X -= pitchDelta;
+
+            float rollDelta = bobSin * Mathf.DegToRad(bobRoll) * speed;
+            angles.Z -= rollDelta;
+
+            float bobHeight = bobSin * speed * bobUp;
+            offset.Y += bobHeight;
         }
 
         camera.Position = offset;
@@ -115,7 +209,43 @@ public partial class CameraComponent : Node
     public void AddFallKick(float fallStrength)
     {
         fallValue = Mathf.DegToRad(fallStrength);
-        fallTImer = fallTime;
+        fallTimer = fallTime;
+    }
+
+    public void AddDamageKick(float pitch, float roll, Vector3 source)
+    {
+        Vector3 forward = camera.GlobalTransform.Basis.Z;
+        Vector3 right = camera.GlobalTransform.Basis.X;
+        Vector3 direction = camera.GlobalPosition.DirectionTo(source);
+        float forwardDot = direction.Dot(forward);
+        float rightDot = direction.Dot(right);
+        damagePitch = Mathf.DegToRad(pitch) * forwardDot;
+        damageRoll = Mathf.DegToRad(roll) * rightDot;
+        damageTimer = damageTime;
+    }
+
+    public void AddWeponKick(float pitch, float yaw, float roll)
+    {
+        weaponKickAngles.X += Mathf.DegToRad(pitch);
+        weaponKickAngles.Y += Mathf.DegToRad((float)GD.RandRange(-yaw, yaw));
+        weaponKickAngles.Z += Mathf.DegToRad((float)GD.RandRange(-roll, roll));
+    }
+
+    // Takes a value from 0.0 to 1.0 for screen shake strength and tweens that offset on both the horizontal and vertical offset of the camera over period of seconds
+    public void AddScreenShake(float amount, float seconds)
+    {
+        screenShakeTween?.Kill();
+
+        screenShakeTween = CreateTween();
+        screenShakeTween.TweenMethod(Callable.From<float>((val) => UpdateScreenShake(val, amount)), 0.0, 1.0, seconds).SetEase(Tween.EaseType.Out);
+    }
+
+    private void UpdateScreenShake(float alpha, float amount)
+    {
+        amount = Mathf.Remap(amount, 0.0f, 1.0f, MIN_SCREEN_SHAKE, MAX_SCREEN_SHAKE);
+        float currentShakeAmount = amount * (1.0f - alpha);
+        camera.HOffset = (float)GD.RandRange(-currentShakeAmount, currentShakeAmount);
+        camera.VOffset = (float)GD.RandRange(-currentShakeAmount, currentShakeAmount);
     }
 
 }
