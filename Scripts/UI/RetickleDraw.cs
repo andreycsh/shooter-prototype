@@ -22,7 +22,6 @@ public partial class RetickleDraw : Control
 
     public override void _Draw()
     {
-        GD.Print("Draw called");
         this.DrawCircleCrosshair();
     }
 

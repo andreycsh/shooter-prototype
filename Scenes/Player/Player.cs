@@ -33,4 +33,7 @@ public partial class Player : CharacterBody3D
     [Export]
     public CameraController PlayerCameraController;
 
+    [Export]
+    public InteractionRaycast PlayerInteractionRaycast;
+
 }

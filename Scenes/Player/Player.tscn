@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://dadrm3fkx4d36" path="res://Scenes/Player/Player.cs" id="1_ude3g"]
 [ext_resource type="Script" uid="uid://dvmpbpe6kqxsy" path="res://Scenes/Player/CameraController.cs" id="2_epg6k"]
 [ext_resource type="Script" uid="uid://bhigoqqa0s56j" path="res://Scenes/Player/Components/JumpComponent.cs" id="2_ft8w5"]
+[ext_resource type="Script" uid="uid://5fjnbbi0livr" path="res://Scenes/Player/Components/InteractionRaycast.cs" id="3_0u84n"]
 [ext_resource type="Script" uid="uid://td80mtn30rmw" path="res://Scenes/Player/Components/MoveComponent.cs" id="3_h54ih"]
 [ext_resource type="Script" uid="uid://rrsqrr5yjoxm" path="res://Scripts/StateMachine/NodeStateMachine.cs" id="5_4wape"]
 [ext_resource type="Script" uid="uid://dfd3egqg8r0id" path="res://Scenes/Player/Components/PostureComponent.cs" id="5_i5acl"]
@@ -48,6 +49,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
 script = ExtResource("2_epg6k")
 
 [node name="Camera3D" type="Camera3D" parent="CameraController" unique_id=467310614]
+
+[node name="InteractionRaycast" type="RayCast3D" parent="CameraController/Camera3D" unique_id=1139477176]
+target_position = Vector3(0, 0, -3)
+script = ExtResource("3_0u84n")
 
 [node name="Components" type="Node" parent="." unique_id=154801447]
 

@@ -16,7 +16,7 @@ size_flags_vertical = 4
 [node name="RetickleDraw" type="Control" parent="Reticle" unique_id=8855220]
 layout_mode = 2
 script = ExtResource("1_3afll")
-Radius = 20.0
+Radius = 15.0
 Thickness = 5.0
 GapAngle = 30.0
 segments = 24
