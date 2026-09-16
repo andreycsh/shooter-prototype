@@ -24,19 +24,39 @@ public partial class MoveComponent : Node
 
         if (player.IsOnFloor())
         {
-            horisontalVelocity = horisontalVelocity.MoveToward(targetVelocity, acceleration * (float) delta);
+            horisontalVelocity = horisontalVelocity.MoveToward(targetVelocity, acceleration * (float)delta);
             player.Velocity = new Vector3(horisontalVelocity.X, player.Velocity.Y, horisontalVelocity.Z);
-        } 
+        }
         else
         {
             if (direction != Vector3.Zero)
             {
-                horisontalVelocity = horisontalVelocity.MoveToward(targetVelocity, airControl * (float) delta);
-            } 
-            horisontalVelocity = horisontalVelocity.MoveToward(Vector3.Zero, airResitance * (float) delta);
+                horisontalVelocity = horisontalVelocity.MoveToward(targetVelocity, airControl * (float)delta);
+            }
+            horisontalVelocity = horisontalVelocity.MoveToward(Vector3.Zero, airResitance * (float)delta);
             player.Velocity = new Vector3(horisontalVelocity.X, player.Velocity.Y, horisontalVelocity.Z);
 
         }
+        
         player.MoveAndSlide();
+
+        if (player.IsOnFloor())
+            player.PlayerStepHandler.HandleStepClimbing();
+        /*if (player.InputDirection.Length() > 0.1)
+        {
+            Vector3 stairWalkerRotation = player.StairWalker.Rotation;
+            stairWalkerRotation.Y = (Mathf.Atan2(-player.InputDirection.X, -player.InputDirection.Y));
+            player.StairWalker.Rotation = stairWalkerRotation;
+
+            if(player.IsOnWall() && player.IsOnFloor())
+            {
+                float stepHeight = player.StairRaycast.GetCollisionPoint().Y - player.GlobalPosition.Y;
+                Vector3 playerGlobalPosition = player.GlobalPosition;
+                playerGlobalPosition.Y += stepHeight + 0.05f;
+                player.GlobalPosition = playerGlobalPosition;
+                player.Velocity = player.PreviousVelocity;
+            }
+        }*/
+        
     }
 }

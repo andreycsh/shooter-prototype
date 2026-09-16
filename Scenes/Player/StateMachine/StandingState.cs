@@ -18,6 +18,11 @@ public partial class StandingState : NodeState
         }
     }
 
+    public override void UpdatePhysicsProcess(double delta)
+    {
+        //player.PlayerCameraComponent.UpdateCameraHeight(delta, 1);
+    }
+
     public override void OnEnter()
     {
         postureComponent.Stand();

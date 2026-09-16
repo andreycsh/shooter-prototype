@@ -33,11 +33,11 @@ public partial class Player : CharacterBody3D
 
     [Export]
     public ShapeCast3D PlayerShapeCast;
-    
+
     [Export]
     public float CrouchOffset = 0.8f;
 
-    [ExportCategory("Player components")]
+    [ExportCategory("References")]
     [Export]
     public CameraController PlayerCameraController;
 
@@ -50,4 +50,19 @@ public partial class Player : CharacterBody3D
     [Export]
     public JumpComponent PlayerJumpComponent;
 
+    [Export]
+    public StepHandlerComponent PlayerStepHandler;
+
+    [Export]
+    public Node3D StairWalker;
+
+    [Export]
+    public RayCast3D StairRaycast;
+
+    public Vector3 PreviousVelocity;
+
+    public override void _PhysicsProcess(double delta)
+    {
+        PreviousVelocity = Velocity;
+    }
 }

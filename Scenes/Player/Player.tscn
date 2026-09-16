@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://bnmq6pyukfxk7" path="res://Scenes/Player/StateMachine/IdleState.cs" id="5_jmcll"]
 [ext_resource type="Script" uid="uid://mu1tylo0c8mu" path="res://Scenes/Player/StateMachine/MoveState.cs" id="7_t26db"]
 [ext_resource type="Script" uid="uid://co34lubl5s30o" path="res://Scenes/Player/StateMachine/WalkState.cs" id="8_fk5o5"]
+[ext_resource type="Script" uid="uid://bwwegq0mr11v6" path="res://Scenes/Player/Components/StepHandlerComponent.cs" id="8_spxdj"]
 [ext_resource type="Script" uid="uid://bn5dhqp84xj34" path="res://Scenes/Player/StateMachine/SneakState.cs" id="9_825xp"]
 [ext_resource type="Script" uid="uid://dx5ysyarl6hqx" path="res://Scenes/Player/StateMachine/StandingState.cs" id="10_0kmp4"]
 [ext_resource type="Script" uid="uid://bs74rx2s6rdno" path="res://Scenes/Player/StateMachine/CrouchingState.cs" id="11_i5acl"]
@@ -26,7 +27,10 @@ height = 1.8
 [sub_resource type="SphereShape3D" id="SphereShape3D_ostoq"]
 radius = 0.45
 
-[node name="Player" type="CharacterBody3D" unique_id=219798193 node_paths=PackedStringArray("StandingCollision", "CrouchingCollision", "PlayerShapeCast", "PlayerCameraController", "PlayerCameraComponent", "PlayerInteractionRaycast", "PlayerJumpComponent")]
+[sub_resource type="BoxMesh" id="BoxMesh_spxdj"]
+size = Vector3(0.06965332, 0.1, 0.1)
+
+[node name="Player" type="CharacterBody3D" unique_id=219798193 node_paths=PackedStringArray("StandingCollision", "CrouchingCollision", "PlayerShapeCast", "PlayerCameraController", "PlayerCameraComponent", "PlayerInteractionRaycast", "PlayerJumpComponent", "PlayerStepHandler", "StairWalker", "StairRaycast")]
 script = ExtResource("1_ude3g")
 StandingCollision = NodePath("StandingCollision")
 CrouchingCollision = NodePath("CrouchingCollision")
@@ -35,6 +39,9 @@ PlayerCameraController = NodePath("CameraController")
 PlayerCameraComponent = NodePath("Components/CameraComponent")
 PlayerInteractionRaycast = NodePath("CameraController/Camera3D/InteractionRaycast")
 PlayerJumpComponent = NodePath("Components/JumpComponent")
+PlayerStepHandler = NodePath("Components/StepHandlerComponent")
+StairWalker = NodePath("StairWalker")
+StairRaycast = NodePath("StairWalker/StairRayCast3D")
 
 [node name="StandingCollision" type="CollisionShape3D" parent="." unique_id=1170711968]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
@@ -59,6 +66,25 @@ script = ExtResource("2_epg6k")
 target_position = Vector3(0, 0, -3)
 script = ExtResource("3_0u84n")
 
+[node name="StairWalker" type="Node3D" parent="." unique_id=1767386525]
+visible = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StairWalker" unique_id=1608464874]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0016951822, 0, -0.69833076)
+mesh = SubResource("BoxMesh_spxdj")
+
+[node name="StairRayCast3D" type="RayCast3D" parent="StairWalker" unique_id=363342032]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.7)
+target_position = Vector3(0, -0.2, 0)
+
+[node name="FrontRayCast3D2" type="RayCast3D" parent="StairWalker" unique_id=245759526]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, -0.4)
+target_position = Vector3(0, 0, -0.4)
+
+[node name="FrontWallRayCast3D3" type="RayCast3D" parent="StairWalker" unique_id=906221185]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.4)
+target_position = Vector3(0, 0, -0.4)
+
 [node name="Components" type="Node" parent="." unique_id=154801447]
 
 [node name="CameraComponent" type="Node" parent="Components" unique_id=670002758 node_paths=PackedStringArray("player", "camera")]
@@ -76,6 +102,10 @@ player = NodePath("../..")
 
 [node name="PostureComponent" type="Node" parent="Components" unique_id=275296936 node_paths=PackedStringArray("player")]
 script = ExtResource("5_i5acl")
+player = NodePath("../..")
+
+[node name="StepHandlerComponent" type="Node" parent="Components" unique_id=1031786487 node_paths=PackedStringArray("player")]
+script = ExtResource("8_spxdj")
 player = NodePath("../..")
 
 [node name="StateMachine" type="Node" parent="." unique_id=1912897067]

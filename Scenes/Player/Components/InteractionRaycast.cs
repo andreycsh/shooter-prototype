@@ -16,7 +16,7 @@ public partial class InteractionRaycast : RayCast3D
             } else
             {
                 currentObject = collidingObject;
-                GD.Print("Object: " + collidingObject.Name);
+                GD.Print("LookAt: " + collidingObject.Name);
             }
         } else
         {

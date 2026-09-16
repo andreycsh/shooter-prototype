@@ -71,6 +71,15 @@ public partial class CameraComponent : Node
     [Export(PropertyHint.Range, "3.0, 8.0, 0.1")]
     private float bobFrequency = 6.0f;
 
+    [ExportGroup("Step Smoothing")]
+    [Export]
+    private float stepSpeed = 8.0f;
+
+    // Step smoothing params
+    private float targetHeight = 0.0f;
+    private bool stepSmoothing = false;
+    private float offsetHeight;
+
     // Fall kick params
     private float fallValue = 0.0f;
     private float fallTimer = 0.0f;
@@ -91,9 +100,12 @@ public partial class CameraComponent : Node
     // Headbob params
     private float stepTimer = 0.0f;
 
+    private const float DEFAULT_CAMERA_HEIGHT = 1.7f;
+
     public override void _Ready()
     {
         Input.MouseMode = Input.MouseModeEnum.Captured;
+        offsetHeight = DEFAULT_CAMERA_HEIGHT;
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -122,6 +134,34 @@ public partial class CameraComponent : Node
     public override void _Process(double delta)
     {
         this.CalculateViewOffset(delta);
+
+        if (stepSmoothing)
+        {
+            targetHeight = (float)Mathf.Lerp(targetHeight, 0.0, stepSpeed * delta);
+            if (Mathf.Abs(targetHeight) < 0.01)
+            {
+                targetHeight = 0.0f;
+                stepSmoothing = false;
+            }
+
+            Vector3 cameraPosition = player.PlayerCameraController.Position;
+            cameraPosition.Y = offsetHeight + targetHeight;
+            player.PlayerCameraController.Position = cameraPosition;
+        }
+    }
+
+    public void SmoothStep(float heightChange)
+    {
+        targetHeight = heightChange;
+        stepSmoothing = true;
+    }
+
+    public void UpdateCameraHeight(double delta, int direction)
+    {
+        if (offsetHeight >= 0.85 && offsetHeight <= DEFAULT_CAMERA_HEIGHT)
+        {
+            offsetHeight = (float)Mathf.Clamp(offsetHeight + player.SneakSpeed * direction * delta, 0.85, DEFAULT_CAMERA_HEIGHT);
+        }
     }
 
     private void CalculateViewOffset(double delta)
@@ -141,8 +181,8 @@ public partial class CameraComponent : Node
         if (speed > 0.1 && player.IsOnFloor())
         {
             stepTimer += (float)delta * (speed / bobFrequency);
-            // stepTimer = (float)Mathf.PosMod(stepTimer, 1.0);
-            stepTimer = stepTimer % 1.0f;
+            stepTimer = (float)Mathf.PosMod(stepTimer, 1.0);
+            //stepTimer = stepTimer % 1.0f;
         }
         else
         {
@@ -247,5 +287,4 @@ public partial class CameraComponent : Node
         camera.HOffset = (float)GD.RandRange(-currentShakeAmount, currentShakeAmount);
         camera.VOffset = (float)GD.RandRange(-currentShakeAmount, currentShakeAmount);
     }
-
 }
