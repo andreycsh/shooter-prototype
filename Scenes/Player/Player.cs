@@ -39,6 +39,9 @@ public partial class Player : CharacterBody3D
 
     [ExportCategory("References")]
     [Export]
+    public Camera3D PlayerCamera;
+    
+    [Export]
     public CameraController PlayerCameraController;
 
     [Export]
@@ -54,10 +57,7 @@ public partial class Player : CharacterBody3D
     public StepHandlerComponent PlayerStepHandler;
 
     [Export]
-    public Node3D StairWalker;
-
-    [Export]
-    public RayCast3D StairRaycast;
+    public WeaponController PlayerWeaponContropller;
 
     public Vector3 PreviousVelocity;
 

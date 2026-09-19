@@ -1,0 +1,12 @@
+[gd_resource type="Resource" format=3 uid="uid://cs1oj28sktufe"]
+
+[ext_resource type="PackedScene" uid="uid://h7fy5ac51olo" path="res://Scenes/Weapons/pistol_weapon.tscn" id="1_6rjvn"]
+[ext_resource type="PackedScene" uid="uid://b5ntg71jrd05x" path="res://Scenes/Weapons/projectile.tscn" id="1_a60lp"]
+[ext_resource type="Script" uid="uid://dnhnps8cu0m1o" path="res://Assets/Weapons/Weapon.cs" id="1_sjnr2"]
+
+[resource]
+script = ExtResource("1_sjnr2")
+IsHitscan = false
+WeaponModel = ExtResource("1_6rjvn")
+ProjectileScene = ExtResource("1_a60lp")
+WeaponPosition = Vector3(0.1, -0.15, -0.25)

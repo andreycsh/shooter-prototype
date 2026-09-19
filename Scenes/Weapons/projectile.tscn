@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://b5ntg71jrd05x"]
+
+[ext_resource type="Script" uid="uid://fxjbtnd2x63b" path="res://Assets/Weapons/Scripts/Projectile.cs" id="1_4lkvf"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ajtct"]
+albedo_color = Color(1, 0, 0.015686275, 1)
+emission_enabled = true
+emission = Color(1, 0, 0, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_ostoq"]
+material = SubResource("StandardMaterial3D_ajtct")
+radius = 0.015
+height = 0.08
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_u1pgf"]
+points = PackedVector3Array(0.014837292, 0.03047619, 0.004680923, -0.015628707, -0.029203366, -0.004204734, -0.015628707, -0.029203366, 0.003410212, 0.013566581, -0.034278754, -0.002934023, -0.004204734, 0.029203366, -0.015628707, -0.0067430497, 0.029203366, 0.014837292, 0.0072192387, -0.027930541, 0.014837292, 0.00848995, -0.025392847, -0.014361103, -0.014361103, 0.033013884, -0.002934023, 0.012298976, 0.029203366, -0.010552077, -0.009281365, -0.03047619, -0.013090392, -0.0067430497, -0.034278754, 0.012298976, 0.004680923, 0.04063492, -0.002934023, 0.00848995, 0.03047619, 0.013566581, -0.002934023, -0.04063492, -0.004204734, 0.013566581, -0.03047619, 0.00848995, -0.014361103, 0.025392847, 0.00848995, 0.016104896, -0.026665673, -0.002934023, -0.011822787, 0.026665673, -0.011822787, -0.009281365, -0.027930541, 0.013566581, -0.0054723388, 0.039362095, 0.0072192387, 0.004680923, -0.039362095, 0.0072192387, 0.003410212, -0.029203366, -0.015628707, 0.004680923, 0.027930541, -0.015628707, 0.0008718966, -0.027930541, 0.016104896, -0.0054723388, 0.03808927, -0.009281365, -0.015628707, 0.026665673, -0.0054723388, 0.0021395008, 0.026665673, 0.016104896, 0.016104896, 0.026665673, -0.002934023, 0.013566581, 0.026665673, 0.009757554, 0.013566581, -0.027930541, -0.009281365, 0.0059485277, -0.0368244, -0.010552077)
+
+[node name="Projectile" type="Area3D" unique_id=2091219292]
+script = ExtResource("1_4lkvf")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=410566916]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_ostoq")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=879178207]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0)
+shape = SubResource("ConvexPolygonShape3D_u1pgf")

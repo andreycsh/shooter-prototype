@@ -12,11 +12,16 @@
 [ext_resource type="Script" uid="uid://mu1tylo0c8mu" path="res://Scenes/Player/StateMachine/MoveState.cs" id="7_t26db"]
 [ext_resource type="Script" uid="uid://co34lubl5s30o" path="res://Scenes/Player/StateMachine/WalkState.cs" id="8_fk5o5"]
 [ext_resource type="Script" uid="uid://bwwegq0mr11v6" path="res://Scenes/Player/Components/StepHandlerComponent.cs" id="8_spxdj"]
+[ext_resource type="Script" uid="uid://bto6x41echxnx" path="res://Assets/Weapons/WeaponController.cs" id="9_0objx"]
 [ext_resource type="Script" uid="uid://bn5dhqp84xj34" path="res://Scenes/Player/StateMachine/SneakState.cs" id="9_825xp"]
 [ext_resource type="Script" uid="uid://dx5ysyarl6hqx" path="res://Scenes/Player/StateMachine/StandingState.cs" id="10_0kmp4"]
+[ext_resource type="Resource" uid="uid://cs1oj28sktufe" path="res://Assets/Weapons/Resources/pistol.tres" id="10_w71ue"]
 [ext_resource type="Script" uid="uid://bs74rx2s6rdno" path="res://Scenes/Player/StateMachine/CrouchingState.cs" id="11_i5acl"]
 [ext_resource type="Script" uid="uid://chwdwe2bpxf6v" path="res://Scenes/Player/StateMachine/GroundedState.cs" id="15_6tu5v"]
 [ext_resource type="Script" uid="uid://bojolpkr85fqp" path="res://Scenes/Player/StateMachine/AirbornState.cs" id="16_spxdj"]
+[ext_resource type="Script" uid="uid://c235r51owbvjk" path="res://Assets/Weapons/Scripts/WeaponStates/IdleWeaponState.cs" id="20_1e6p3"]
+[ext_resource type="Script" uid="uid://clraxc1gktft7" path="res://Assets/Weapons/Scripts/WeaponStates/FireWeaponState.cs" id="21_yb677"]
+[ext_resource type="Script" uid="uid://csflplj6bbh4x" path="res://Assets/Weapons/Scripts/WeaponStates/EmptyWeaponState.cs" id="22_8cj01"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qbkls"]
 radius = 0.45
@@ -30,18 +35,18 @@ radius = 0.45
 [sub_resource type="BoxMesh" id="BoxMesh_spxdj"]
 size = Vector3(0.06965332, 0.1, 0.1)
 
-[node name="Player" type="CharacterBody3D" unique_id=219798193 node_paths=PackedStringArray("StandingCollision", "CrouchingCollision", "PlayerShapeCast", "PlayerCameraController", "PlayerCameraComponent", "PlayerInteractionRaycast", "PlayerJumpComponent", "PlayerStepHandler", "StairWalker", "StairRaycast")]
+[node name="Player" type="CharacterBody3D" unique_id=219798193 node_paths=PackedStringArray("StandingCollision", "CrouchingCollision", "PlayerShapeCast", "PlayerCamera", "PlayerCameraController", "PlayerCameraComponent", "PlayerInteractionRaycast", "PlayerJumpComponent", "PlayerStepHandler", "PlayerWeaponContropller")]
 script = ExtResource("1_ude3g")
 StandingCollision = NodePath("StandingCollision")
 CrouchingCollision = NodePath("CrouchingCollision")
 PlayerShapeCast = NodePath("ShapeCast3D")
+PlayerCamera = NodePath("CameraController/Camera3D")
 PlayerCameraController = NodePath("CameraController")
 PlayerCameraComponent = NodePath("Components/CameraComponent")
 PlayerInteractionRaycast = NodePath("CameraController/Camera3D/InteractionRaycast")
 PlayerJumpComponent = NodePath("Components/JumpComponent")
 PlayerStepHandler = NodePath("Components/StepHandlerComponent")
-StairWalker = NodePath("StairWalker")
-StairRaycast = NodePath("StairWalker/StairRayCast3D")
+PlayerWeaponContropller = NodePath("Components/WeaponController")
 
 [node name="StandingCollision" type="CollisionShape3D" parent="." unique_id=1170711968]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
@@ -108,6 +113,12 @@ player = NodePath("../..")
 script = ExtResource("8_spxdj")
 player = NodePath("../..")
 
+[node name="WeaponController" type="Node" parent="Components" unique_id=59421911 node_paths=PackedStringArray("player", "WeaponModelParent")]
+script = ExtResource("9_0objx")
+player = NodePath("../..")
+CurrentWeapon = ExtResource("10_w71ue")
+WeaponModelParent = NodePath("../../CameraController")
+
 [node name="StateMachine" type="Node" parent="." unique_id=1912897067]
 
 [node name="MovementStateMachine" type="Node" parent="StateMachine" unique_id=1917154939 node_paths=PackedStringArray("initialNodeState")]
@@ -154,4 +165,20 @@ player = NodePath("../../..")
 
 [node name="AirbornState" type="Node" parent="StateMachine/GroundedStateMachine" unique_id=466942580 node_paths=PackedStringArray("player")]
 script = ExtResource("16_spxdj")
+player = NodePath("../../..")
+
+[node name="WeaponStateMachine" type="Node" parent="StateMachine" unique_id=1093746585 node_paths=PackedStringArray("initialNodeState")]
+script = ExtResource("5_4wape")
+initialNodeState = NodePath("IdleWeaponState")
+
+[node name="IdleWeaponState" type="Node" parent="StateMachine/WeaponStateMachine" unique_id=2020677007 node_paths=PackedStringArray("player")]
+script = ExtResource("20_1e6p3")
+player = NodePath("../../..")
+
+[node name="FireWeaponState" type="Node" parent="StateMachine/WeaponStateMachine" unique_id=649090248 node_paths=PackedStringArray("player")]
+script = ExtResource("21_yb677")
+player = NodePath("../../..")
+
+[node name="EmptyWeaponState" type="Node" parent="StateMachine/WeaponStateMachine" unique_id=269060282 node_paths=PackedStringArray("player")]
+script = ExtResource("22_8cj01")
 player = NodePath("../../..")
