@@ -1,7 +1,5 @@
 [gd_scene format=3 uid="uid://wdwilreu8vlq"]
 
-[ext_resource type="PackedScene" uid="uid://buyxkfhfv3q5m" path="res://Scenes/Player/Player.tscn" id="1_trwsy"]
-
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_trwsy"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
 ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -31,9 +29,6 @@ shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=78040084]
 environment = SubResource("Environment_8wt8u")
-
-[node name="Player" parent="." unique_id=219798193 instance=ExtResource("1_trwsy")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.0350943, 2.3841858e-07, 0.35292673)
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=1309747785]
 use_collision = true

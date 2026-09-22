@@ -7,14 +7,12 @@ public partial class IdleWeaponState : NodeState
 
     public override void UpdateProcess(double delta)
     {
-        if (Input.IsActionJustPressed("Fire") && player.PlayerWeaponContropller.CurrentAmmo > 0)
+        if (player.PlayerWeaponContropller.CurrentWeapon == null)
+            return;
+            
+        if (Input.IsActionJustPressed("Fire") && player.PlayerWeaponContropller.CurrentWeapon.Ammo > 0)
         {
             EmitSignal(SignalName.TransitionState, nameof(WeaponStates.FireWeaponState));
-        } 
-
-        if (player.PlayerWeaponContropller.CurrentAmmo <= 0)
-        {
-            EmitSignal(SignalName.TransitionState, nameof(WeaponStates.EmptyWeaponState));
         }
     }
 

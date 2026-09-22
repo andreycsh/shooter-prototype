@@ -7,7 +7,7 @@ public partial class WeaponController : Node
     private Player player;
 
     [Export]
-    public Weapon CurrentWeapon;
+    public WeaponData CurrentWeapon;
 
     [Export]
     public Node3D WeaponModelParent;
@@ -16,8 +16,6 @@ public partial class WeaponController : Node
     public Node WeaponStateChart;
 
     private Node3D CurrentWeaponModel;
-
-    public int CurrentAmmo = 0;
 
     private bool canFireNext = true;
 
@@ -28,7 +26,6 @@ public partial class WeaponController : Node
         if (CurrentWeapon != null)
         {
             SpawnWeaponModel();
-            CurrentAmmo = CurrentWeapon.MaxAmmo;
         }
     }
 
@@ -46,7 +43,7 @@ public partial class WeaponController : Node
     }
     public bool CanFire()
     {
-        return CurrentAmmo > 0 && canFireNext;
+        return CurrentWeapon.Ammo > 0 && canFireNext;
     }
 
 
@@ -54,11 +51,11 @@ public partial class WeaponController : Node
     {
         CurrentWeaponModel?.QueueFree();
 
-        if (CurrentWeapon.WeaponModel != null)
+        if (CurrentWeapon._Weapon.WeaponModel != null)
         {
-            CurrentWeaponModel = CurrentWeapon.WeaponModel.Instantiate<Node3D>();
+            CurrentWeaponModel = CurrentWeapon._Weapon.WeaponModel.Instantiate<Node3D>();
             WeaponModelParent.AddChild(CurrentWeaponModel);
-            CurrentWeaponModel.Position = CurrentWeapon.WeaponPosition;
+            CurrentWeaponModel.Position = CurrentWeapon._Weapon.WeaponPosition;
         }
     }
 
@@ -67,14 +64,14 @@ public partial class WeaponController : Node
         if (!CanFire())
             return;
 
-        //CurrentAmmo -= 1;
+        CurrentWeapon.Ammo -=1;
 
-        GD.Print(CurrentAmmo);
+        GD.Print(CurrentWeapon.Ammo);
 
         canFireNext = false;
-        fireRateTimer = 1.0f / CurrentWeapon.FireRate;
+        fireRateTimer = 1.0f / CurrentWeapon._Weapon.FireRate;
 
-        if (CurrentWeapon.IsHitscan)
+        if (CurrentWeapon._Weapon.IsHitscan)
         {
             this.PerformHitscan();
         }
@@ -84,15 +81,24 @@ public partial class WeaponController : Node
         }
     }
 
+    public void SwitchWeapon(WeaponData weaponData)
+    {
+        CurrentWeapon = weaponData;
+
+        CurrentWeaponModel?.QueueFree();
+
+        SpawnWeaponModel();
+    }
+
     private void PerformHitscan()
     {
         PhysicsDirectSpaceState3D spaceState = player.PlayerCamera.GetWorld3D().DirectSpaceState;
         Vector3 from = player.PlayerCamera.GlobalPosition;
         
 
-        float accuracySpread = (100 - CurrentWeapon.Accuracy) / 1000.0f;
+        float accuracySpread = (100 - CurrentWeapon._Weapon.Accuracy) / 1000.0f;
 
-        for (int i = 0; i < CurrentWeapon.PelletCount; i++)
+        for (int i = 0; i < CurrentWeapon._Weapon.PelletCount; i++)
         {
             Vector3 forward = -player.PlayerCamera.GlobalTransform.Basis.Z;
 
@@ -100,14 +106,14 @@ public partial class WeaponController : Node
             float accuracyY = (float)GD.RandRange(-accuracySpread, accuracySpread);
             Vector3 direction = forward + new Vector3(accuracyX, accuracyY, 0f) * player.PlayerCamera.GlobalTransform.Basis;
 
-            if (CurrentWeapon.PelletCount  > 1)
+            if (CurrentWeapon._Weapon.PelletCount  > 1)
             {
-                float spreadX = (float)GD.RandRange(-CurrentWeapon.SpreadAngle, CurrentWeapon.SpreadAngle);
-                float spreadY = (float)GD.RandRange(-CurrentWeapon.SpreadAngle, CurrentWeapon.SpreadAngle);
+                float spreadX = (float)GD.RandRange(-CurrentWeapon._Weapon.SpreadAngle, CurrentWeapon._Weapon.SpreadAngle);
+                float spreadY = (float)GD.RandRange(-CurrentWeapon._Weapon.SpreadAngle, CurrentWeapon._Weapon.SpreadAngle);
                 direction += new Vector3(spreadX, spreadY, 0f) * player.PlayerCamera.GlobalTransform.Basis;
             }
 
-            Vector3 to = from + direction * CurrentWeapon.Range;
+            Vector3 to = from + direction * CurrentWeapon._Weapon.Range;
 
             PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(from, to);
             Dictionary result = spaceState.IntersectRay(query);
@@ -140,12 +146,12 @@ public partial class WeaponController : Node
 
     private void SpawnProjectile()
     {
-        Projectile projectile = CurrentWeapon.ProjectileScene.Instantiate<Projectile>();
+        Projectile projectile = CurrentWeapon._Weapon.ProjectileScene.Instantiate<Projectile>();
         GetTree().CurrentScene.AddChild(projectile);
 
         projectile.GlobalPosition = player.PlayerCamera.GlobalPosition;
 
-        float accuracySpread = (100 - CurrentWeapon.Accuracy) / 1000.0f;
+        float accuracySpread = (100 - CurrentWeapon._Weapon.Accuracy) / 1000.0f;
 
         Vector3 forward = -player.PlayerCamera.GlobalTransform.Basis.Z;
 
@@ -153,9 +159,9 @@ public partial class WeaponController : Node
         float accuracyY = (float)GD.RandRange(-accuracySpread, accuracySpread);
         Vector3 direction = forward + new Vector3(accuracyX, accuracyY, 0f);
 
-        Vector3 velocity = direction * CurrentWeapon.ProjectileSpeed;
+        Vector3 velocity = direction * CurrentWeapon._Weapon.ProjectileSpeed;
         projectile.LookAt(projectile.GlobalPosition + direction, Vector3.Up);
 
-        projectile.SetupProjectile(velocity, CurrentWeapon.Damage);
+        projectile.SetupProjectile(velocity, CurrentWeapon._Weapon.Damage);
     }
 }

@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://cuv8ovyrjxhqn"]
+
+[ext_resource type="Script" uid="uid://boggon4wvunfs" path="res://Scripts/Enviroment/Pickaps/BasePickap.cs" id="1_nf0t8"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_nf0t8"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_ostoq"]
+size = Vector3(0.4, 0.4, 0.4)
+
+[node name="BasePickup" type="Area3D" unique_id=925801684]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_nf0t8")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=911889087]
+shape = SubResource("SphereShape3D_nf0t8")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2056101694]
+mesh = SubResource("BoxMesh_ostoq")

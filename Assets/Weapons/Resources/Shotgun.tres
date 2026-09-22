@@ -1,0 +1,18 @@
+[gd_resource type="Resource" format=3 uid="uid://bx0mosjr5gths"]
+
+[ext_resource type="PackedScene" uid="uid://h7fy5ac51olo" path="res://Scenes/Weapons/pistol_weapon.tscn" id="1_0l7lu"]
+[ext_resource type="PackedScene" uid="uid://b5ntg71jrd05x" path="res://Scenes/Weapons/projectile.tscn" id="1_1rbe8"]
+[ext_resource type="Script" uid="uid://dnhnps8cu0m1o" path="res://Assets/Weapons/Weapon.cs" id="1_rmcdc"]
+
+[resource]
+script = ExtResource("1_rmcdc")
+WeaponName = "Shotgun"
+Damage = 10.0
+MaxAmmo = 8
+FireRate = 1.0
+Range = 15.0
+Accuracy = 80
+WeaponModel = ExtResource("1_0l7lu")
+ProjectileScene = ExtResource("1_1rbe8")
+PelletCount = 8
+SpreadAngle = 0.1

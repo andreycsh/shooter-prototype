@@ -7,12 +7,12 @@ public partial class FireWeaponState : NodeState
 
     public override void UpdatePhysicsProcess(double delta)
     {
-        if (player.PlayerWeaponContropller.CurrentAmmo < 1)
+        if (player.PlayerWeaponContropller.CurrentWeapon.Ammo < 1)
         {
             EmitSignal(SignalName.TransitionState, nameof(WeaponStates.EmptyWeaponState));
         }
 
-        if(player.PlayerWeaponContropller.CurrentWeapon.IsAutomatic)
+        if(player.PlayerWeaponContropller.CurrentWeapon._Weapon.IsAutomatic)
         {
             if (Input.IsActionPressed("Fire"))
             {

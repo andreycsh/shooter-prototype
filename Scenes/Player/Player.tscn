@@ -15,7 +15,6 @@
 [ext_resource type="Script" uid="uid://bto6x41echxnx" path="res://Assets/Weapons/WeaponController.cs" id="9_0objx"]
 [ext_resource type="Script" uid="uid://bn5dhqp84xj34" path="res://Scenes/Player/StateMachine/SneakState.cs" id="9_825xp"]
 [ext_resource type="Script" uid="uid://dx5ysyarl6hqx" path="res://Scenes/Player/StateMachine/StandingState.cs" id="10_0kmp4"]
-[ext_resource type="Resource" uid="uid://cs1oj28sktufe" path="res://Assets/Weapons/Resources/pistol.tres" id="10_w71ue"]
 [ext_resource type="Script" uid="uid://bs74rx2s6rdno" path="res://Scenes/Player/StateMachine/CrouchingState.cs" id="11_i5acl"]
 [ext_resource type="Script" uid="uid://chwdwe2bpxf6v" path="res://Scenes/Player/StateMachine/GroundedState.cs" id="15_6tu5v"]
 [ext_resource type="Script" uid="uid://bojolpkr85fqp" path="res://Scenes/Player/StateMachine/AirbornState.cs" id="16_spxdj"]
@@ -36,6 +35,7 @@ radius = 0.45
 size = Vector3(0.06965332, 0.1, 0.1)
 
 [node name="Player" type="CharacterBody3D" unique_id=219798193 node_paths=PackedStringArray("StandingCollision", "CrouchingCollision", "PlayerShapeCast", "PlayerCamera", "PlayerCameraController", "PlayerCameraComponent", "PlayerInteractionRaycast", "PlayerJumpComponent", "PlayerStepHandler", "PlayerWeaponContropller")]
+collision_layer = 2
 script = ExtResource("1_ude3g")
 StandingCollision = NodePath("StandingCollision")
 CrouchingCollision = NodePath("CrouchingCollision")
@@ -116,7 +116,6 @@ player = NodePath("../..")
 [node name="WeaponController" type="Node" parent="Components" unique_id=59421911 node_paths=PackedStringArray("player", "WeaponModelParent")]
 script = ExtResource("9_0objx")
 player = NodePath("../..")
-CurrentWeapon = ExtResource("10_w71ue")
 WeaponModelParent = NodePath("../../CameraController")
 
 [node name="StateMachine" type="Node" parent="." unique_id=1912897067]

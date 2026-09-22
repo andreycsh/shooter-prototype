@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://b51e0wwwd2msj"]
+
+[ext_resource type="PackedScene" uid="uid://cuv8ovyrjxhqn" path="res://Scenes/Enviroment/Pickups/BasePickup.tscn" id="1_vi5my"]
+[ext_resource type="Script" uid="uid://cwhk5yi7txj6t" path="res://Scripts/Enviroment/Pickaps/WeaponPickup.cs" id="2_0trkm"]
+[ext_resource type="Resource" uid="uid://cs1oj28sktufe" path="res://Assets/Weapons/Resources/Pistol.tres" id="3_rgjjh"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_0trkm"]
+radius = 0.2
+height = 0.8
+
+[node name="WeaponPickup" unique_id=925801684 instance=ExtResource("1_vi5my")]
+script = ExtResource("2_0trkm")
+weaponSlot = 2
+WeaponResource = ExtResource("3_rgjjh")
+
+[node name="MeshInstance3D" parent="." index="1" unique_id=2056101694]
+transform = Transform3D(1, 0, 0, 0, 0.70710677, -0.70710677, 0, 0.70710677, 0.70710677, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_0trkm")
