@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Godot;
 using Godot.Collections;
 
@@ -45,6 +44,14 @@ public partial class Projectile : Area3D
     {
         GD.Print("Projectile hit: ", body.Name, " ", GlobalPosition);
         SpawnImpactMarcker(GlobalPosition);
+
+        HealthComponent healthComponent = body.GetNodeOrNull<HealthComponent>("HealthComponent");
+
+        if(healthComponent is not null)
+        {
+            healthComponent.TakeDamage(_damage, GetParent<Node3D>());
+        }
+
         QueueFree();
     }
 

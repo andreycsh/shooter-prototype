@@ -122,6 +122,8 @@ public partial class WeaponController : Node
             {
                 //GD.Print("Hit: ", result["collider"], " At: ", result["position"], "\n", result);
                 SpawnImpactMarcker((Vector3)result["position"]);
+
+                ApplyDamageToTarget((Node3D)result["collider"]);
             }
         }
     }
@@ -163,5 +165,15 @@ public partial class WeaponController : Node
         projectile.LookAt(projectile.GlobalPosition + direction, Vector3.Up);
 
         projectile.SetupProjectile(velocity, CurrentWeapon._Weapon.Damage);
+    }
+
+    private void ApplyDamageToTarget(Node3D target)
+    {
+        HealthComponent healthComponent = target.GetNodeOrNull<HealthComponent>("HealthComponent");
+
+        if(healthComponent is not null)
+        {
+            healthComponent.TakeDamage(CurrentWeapon._Weapon.Damage, GetOwner<Node3D>());
+        }
     }
 }

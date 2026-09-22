@@ -9,6 +9,7 @@
 [ext_resource type="Resource" uid="uid://cba6tdsx5t8tr" path="res://Assets/Weapons/Resources/ShotgunData.tres" id="5_otrjs"]
 [ext_resource type="PackedScene" uid="uid://b51e0wwwd2msj" path="res://Scenes/Enviroment/Pickups/WeaponPickup.tscn" id="6_4b5ya"]
 [ext_resource type="PackedScene" uid="uid://buyxkfhfv3q5m" path="res://Scenes/Player/Player.tscn" id="8_kkylh"]
+[ext_resource type="PackedScene" uid="uid://477da4nhk1pc" path="res://Scenes/Enviroment/Objects/DestructiveBox.tscn" id="10_i6vuc"]
 [ext_resource type="PackedScene" uid="uid://bhfg1nwa3ef78" path="res://Scenes/Enviroment/Pickups/AmmoPickup.tscn" id="10_ssvp5"]
 
 [node name="Main" type="Node" unique_id=120337810]
@@ -27,9 +28,6 @@ Weapons = Dictionary[int, ExtResource("3_15x7p")]({
 })
 player = NodePath("../../CurrentLevel/Player")
 
-[node name="WeaponPickup" parent="Managers" unique_id=925801684 instance=ExtResource("6_4b5ya")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1223574, 0.42426503, 5.315031)
-
 [node name="CurrentLevel" type="Node3D" parent="." unique_id=1885093377]
 
 [node name="Level" parent="CurrentLevel" unique_id=1092885443 instance=ExtResource("1_f7w4e")]
@@ -37,7 +35,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1223574, 0.42426503, 5.3150
 [node name="Player" parent="CurrentLevel" unique_id=219798193 instance=ExtResource("8_kkylh")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0.1, -1)
 
-[node name="UserInterface" parent="." unique_id=834877993 instance=ExtResource("1_gmpym")]
-
-[node name="AmmoPickup" parent="." unique_id=1784490555 instance=ExtResource("10_ssvp5")]
+[node name="AmmoPickup" parent="CurrentLevel" unique_id=1784490555 instance=ExtResource("10_ssvp5")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.845087, 0.1, 8.947295)
+
+[node name="WeaponPickup" parent="CurrentLevel" unique_id=925801684 instance=ExtResource("6_4b5ya")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1223574, 0.42426503, 5.315031)
+
+[node name="DestructiveBox" parent="CurrentLevel" unique_id=1442850236 instance=ExtResource("10_i6vuc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.164568, 0.5, 5.403284)
+
+[node name="UserInterface" parent="." unique_id=834877993 instance=ExtResource("1_gmpym")]
