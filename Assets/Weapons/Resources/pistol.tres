@@ -6,7 +6,8 @@
 
 [resource]
 script = ExtResource("1_sjnr2")
-IsHitscan = false
+Accuracy = 50
 WeaponModel = ExtResource("1_6rjvn")
 ProjectileScene = ExtResource("1_a60lp")
+SpreadAngle = 0.1
 WeaponPosition = Vector3(0.1, -0.15, -0.25)

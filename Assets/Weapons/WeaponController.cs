@@ -19,6 +19,10 @@ public partial class WeaponController : Node
 
     public int CurrentAmmo = 0;
 
+    private bool canFireNext = true;
+
+    private float fireRateTimer = 0f;
+
     public override void _Ready()
     {
         if (CurrentWeapon != null)
@@ -27,6 +31,24 @@ public partial class WeaponController : Node
             CurrentAmmo = CurrentWeapon.MaxAmmo;
         }
     }
+
+    public override void _Process(double delta)
+    {
+        if (fireRateTimer > 0)
+        {
+            fireRateTimer -= (float)delta;
+
+            if(fireRateTimer <=0)
+            {
+                canFireNext = true;
+            }
+        }
+    }
+    public bool CanFire()
+    {
+        return CurrentAmmo > 0 && canFireNext;
+    }
+
 
     public void SpawnWeaponModel()
     {
@@ -42,12 +64,15 @@ public partial class WeaponController : Node
 
     public void FireWeapon()
     {
-        if (CurrentAmmo < 1)
+        if (!CanFire())
             return;
 
         //CurrentAmmo -= 1;
 
         GD.Print(CurrentAmmo);
+
+        canFireNext = false;
+        fireRateTimer = 1.0f / CurrentWeapon.FireRate;
 
         if (CurrentWeapon.IsHitscan)
         {
@@ -63,16 +88,35 @@ public partial class WeaponController : Node
     {
         PhysicsDirectSpaceState3D spaceState = player.PlayerCamera.GetWorld3D().DirectSpaceState;
         Vector3 from = player.PlayerCamera.GlobalPosition;
-        Vector3 forward = -player.PlayerCamera.GlobalTransform.Basis.Z;
-        Vector3 to = from + forward * CurrentWeapon.Range;
+        
 
-        PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(from, to);
-        Dictionary result = spaceState.IntersectRay(query);
+        float accuracySpread = (100 - CurrentWeapon.Accuracy) / 1000.0f;
 
-        if (result.Count > 0)
+        for (int i = 0; i < CurrentWeapon.PelletCount; i++)
         {
-            //GD.Print("Hit: ", result["collider"], " At: ", result["position"], "\n", result);
-            SpawnImpactMarcker((Vector3)result["position"]);
+            Vector3 forward = -player.PlayerCamera.GlobalTransform.Basis.Z;
+
+            float accuracyX = (float)GD.RandRange(-accuracySpread, accuracySpread);
+            float accuracyY = (float)GD.RandRange(-accuracySpread, accuracySpread);
+            Vector3 direction = forward + new Vector3(accuracyX, accuracyY, 0f) * player.PlayerCamera.GlobalTransform.Basis;
+
+            if (CurrentWeapon.PelletCount  > 1)
+            {
+                float spreadX = (float)GD.RandRange(-CurrentWeapon.SpreadAngle, CurrentWeapon.SpreadAngle);
+                float spreadY = (float)GD.RandRange(-CurrentWeapon.SpreadAngle, CurrentWeapon.SpreadAngle);
+                direction += new Vector3(spreadX, spreadY, 0f) * player.PlayerCamera.GlobalTransform.Basis;
+            }
+
+            Vector3 to = from + direction * CurrentWeapon.Range;
+
+            PhysicsRayQueryParameters3D query = PhysicsRayQueryParameters3D.Create(from, to);
+            Dictionary result = spaceState.IntersectRay(query);
+
+            if (result.Count > 0)
+            {
+                //GD.Print("Hit: ", result["collider"], " At: ", result["position"], "\n", result);
+                SpawnImpactMarcker((Vector3)result["position"]);
+            }
         }
     }
 
@@ -80,7 +124,7 @@ public partial class WeaponController : Node
     {
         MeshInstance3D marker = new MeshInstance3D();
         BoxMesh box = new BoxMesh();
-        box.Size = new Vector3(0.1f, 0.1f, 0.1f);
+        box.Size = new Vector3(0.05f, 0.05f, 0.05f);
         marker.Mesh = box;
 
         StandardMaterial3D material = new StandardMaterial3D();
@@ -101,9 +145,16 @@ public partial class WeaponController : Node
 
         projectile.GlobalPosition = player.PlayerCamera.GlobalPosition;
 
+        float accuracySpread = (100 - CurrentWeapon.Accuracy) / 1000.0f;
+
         Vector3 forward = -player.PlayerCamera.GlobalTransform.Basis.Z;
-        Vector3 velocity = forward * CurrentWeapon.ProjectileSpeed;
-        projectile.LookAt(projectile.GlobalPosition  + forward, Vector3.Up);
+
+        float accuracyX = (float)GD.RandRange(-accuracySpread, accuracySpread);
+        float accuracyY = (float)GD.RandRange(-accuracySpread, accuracySpread);
+        Vector3 direction = forward + new Vector3(accuracyX, accuracyY, 0f);
+
+        Vector3 velocity = direction * CurrentWeapon.ProjectileSpeed;
+        projectile.LookAt(projectile.GlobalPosition + direction, Vector3.Up);
 
         projectile.SetupProjectile(velocity, CurrentWeapon.Damage);
     }

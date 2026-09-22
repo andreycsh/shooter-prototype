@@ -12,6 +12,18 @@ public partial class FireWeaponState : NodeState
             EmitSignal(SignalName.TransitionState, nameof(WeaponStates.EmptyWeaponState));
         }
 
+        if(player.PlayerWeaponContropller.CurrentWeapon.IsAutomatic)
+        {
+            if (Input.IsActionPressed("Fire"))
+            {
+                if (player.PlayerWeaponContropller.CanFire())
+                {
+                    player.PlayerWeaponContropller.FireWeapon();
+                    return;
+                }
+            }
+        }
+
         EmitSignal(SignalName.TransitionState, nameof(WeaponStates.IdleWeaponState));
     }
 
