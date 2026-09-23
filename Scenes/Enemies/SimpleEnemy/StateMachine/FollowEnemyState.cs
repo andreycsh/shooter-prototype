@@ -17,6 +17,8 @@ public partial class FollowEnemyState : NodeState
         if (enemy.NavigationAgent.IsNavigationFinished())
         {
             enemy.NavigationAgent.Velocity = Vector3.Zero;
+            if (enemy._AnimationPlayer is not null && enemy._AnimationPlayer.CurrentAnimation != "Fighting_Idle")
+            enemy._AnimationPlayer.Play("Fighting_Idle");
             return;
         }
 
@@ -24,7 +26,10 @@ public partial class FollowEnemyState : NodeState
         Vector3 direction = (nextPosition - enemy.GlobalPosition).Normalized();
 
         enemy.NavigationAgent.Velocity = direction * enemy.FollowSpeed;
-
+        
+        if (enemy._AnimationPlayer is not null && enemy._AnimationPlayer.CurrentAnimation != "Walk")
+            enemy._AnimationPlayer.Play("Walk");
+        
         if (direction.Length() > 0.1)
         {
             float targetRotation = Mathf.Atan2(direction.X, direction.Z);

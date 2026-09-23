@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using System.Runtime.CompilerServices;
 
 public partial class SimpleEnemy : BaseEnemy
 {
@@ -14,6 +12,9 @@ public partial class SimpleEnemy : BaseEnemy
     [Export]
     private HealthComponent healthComponent;
 
+    [Export]
+    public AnimationPlayer _AnimationPlayer;
+
     public Node3D Target;
 
     public override void _Ready()
@@ -24,6 +25,12 @@ public partial class SimpleEnemy : BaseEnemy
 
         healthComponent.Connect(HealthComponent.SignalName.Died, Callable.From(Die));
         NavigationAgent.Connect(NavigationAgent3D.SignalName.VelocityComputed, Callable.From<Vector3>(OnVelocityComputed));
+
+        if (_AnimationPlayer is not null)
+        {
+            _AnimationPlayer.Play("Fighting_Idle");
+            _AnimationPlayer.Seek(GD.RandRange(0.0f, _AnimationPlayer.CurrentAnimationLength));
+        }
 
     }
 
