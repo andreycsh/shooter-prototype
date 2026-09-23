@@ -120,7 +120,7 @@ public partial class WeaponController : Node
 
             if (result.Count > 0)
             {
-                //GD.Print("Hit: ", result["collider"], " At: ", result["position"], "\n", result);
+                GD.Print("Hit: ", result["collider"], " At: ", result["position"], "\n", result);
                 SpawnImpactMarcker((Vector3)result["position"]);
 
                 ApplyDamageToTarget((Node3D)result["collider"]);
@@ -169,7 +169,7 @@ public partial class WeaponController : Node
 
     private void ApplyDamageToTarget(Node3D target)
     {
-        HealthComponent healthComponent = target.GetNodeOrNull<HealthComponent>("HealthComponent");
+        HealthComponent healthComponent = target.GetNodeOrNull<HealthComponent>("%HealthComponent");
 
         if(healthComponent is not null)
         {

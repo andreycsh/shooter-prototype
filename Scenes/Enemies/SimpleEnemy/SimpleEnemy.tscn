@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://qoxwhmeplgso"]
+
+[ext_resource type="Script" uid="uid://k7j5smhbl3mb" path="res://Scenes/Enemies/SimpleEnemy/SimpleEnemy.cs" id="1_7k7cm"]
+[ext_resource type="Script" uid="uid://nlhliyt55h62" path="res://Scripts/Components/HealthComponent.cs" id="2_uuwfi"]
+[ext_resource type="Script" uid="uid://rrsqrr5yjoxm" path="res://Scripts/StateMachine/NodeStateMachine.cs" id="3_1rn3m"]
+[ext_resource type="Script" uid="uid://difxcnfrptg3d" path="res://Scenes/Enemies/SimpleEnemy/StateMachine/IdleEnemyState.cs" id="4_1rn3m"]
+[ext_resource type="Script" uid="uid://dqn3wknn7ug32" path="res://Scenes/Enemies/SimpleEnemy/StateMachine/FollowEnemyState.cs" id="5_1rn3m"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ajtct"]
+albedo_color = Color(1, 0, 1, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ostoq"]
+material = SubResource("StandardMaterial3D_ajtct")
+size = Vector3(1, 2, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ostoq"]
+size = Vector3(1, 2, 1)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_1rn3m"]
+radius = 7.0
+
+[node name="SimpleEnemy" type="CharacterBody3D" unique_id=1029131920 node_paths=PackedStringArray("NavigationAgent", "healthComponent")]
+script = ExtResource("1_7k7cm")
+NavigationAgent = NodePath("NavigationAgent3D")
+healthComponent = NodePath("Components/HealthComponent")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=879659775]
+path_desired_distance = 0.5
+avoidance_enabled = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1498924485]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("BoxMesh_ostoq")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=854355215]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("BoxShape3D_ostoq")
+
+[node name="DetectionArea" type="Area3D" parent="." unique_id=146286714]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DetectionArea" unique_id=1526599231]
+shape = SubResource("SphereShape3D_1rn3m")
+
+[node name="Components" type="Node" parent="." unique_id=781413657]
+
+[node name="HealthComponent" type="Node" parent="Components" unique_id=1697405166]
+script = ExtResource("2_uuwfi")
+maxHealth = 50.0
+metadata/_custom_type_script = "uid://nlhliyt55h62"
+
+[node name="EnemyStateMachine" type="Node" parent="." unique_id=1304036439 node_paths=PackedStringArray("initialNodeState")]
+script = ExtResource("3_1rn3m")
+initialNodeState = NodePath("IdleEnemyState")
+
+[node name="IdleEnemyState" type="Node" parent="EnemyStateMachine" unique_id=1760166597]
+script = ExtResource("4_1rn3m")
+
+[node name="FollowEnemyState" type="Node" parent="EnemyStateMachine" unique_id=221552808 node_paths=PackedStringArray("enemy")]
+script = ExtResource("5_1rn3m")
+enemy = NodePath("../..")
+
+[connection signal="body_entered" from="DetectionArea" to="." method="OnDetectionAreaBodyEntered"]

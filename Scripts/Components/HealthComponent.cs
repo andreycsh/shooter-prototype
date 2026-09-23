@@ -28,6 +28,8 @@ public partial class HealthComponent : Node
         {
             currentHealth = maxHealth;
         }
+
+        UniqueNameInOwner = true;
     }
 
 

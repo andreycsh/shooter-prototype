@@ -35,7 +35,7 @@ radius = 0.45
 [sub_resource type="BoxMesh" id="BoxMesh_spxdj"]
 size = Vector3(0.06965332, 0.1, 0.1)
 
-[node name="Player" type="CharacterBody3D" unique_id=219798193 node_paths=PackedStringArray("StandingCollision", "CrouchingCollision", "PlayerShapeCast", "PlayerCamera", "PlayerCameraController", "PlayerCameraComponent", "PlayerInteractionRaycast", "PlayerJumpComponent", "PlayerStepHandler", "PlayerWeaponContropller")]
+[node name="Player" type="CharacterBody3D" unique_id=219798193 node_paths=PackedStringArray("StandingCollision", "CrouchingCollision", "PlayerShapeCast", "PlayerCamera", "PlayerCameraController", "PlayerCameraComponent", "PlayerInteractionRaycast", "PlayerJumpComponent", "PlayerStepHandler", "PlayerWeaponContropller") groups=["player"]]
 collision_layer = 2
 script = ExtResource("1_ude3g")
 StandingCollision = NodePath("StandingCollision")
@@ -119,7 +119,7 @@ script = ExtResource("9_0objx")
 player = NodePath("../..")
 WeaponModelParent = NodePath("../../CameraController")
 
-[node name="HealthComponent" type="Node" parent="Components" unique_id=875223678]
+[node name="HealthComponent" type="Node" parent="Components" unique_id=875223678 groups=["player"]]
 script = ExtResource("10_8cj01")
 metadata/_custom_type_script = "uid://nlhliyt55h62"
 
