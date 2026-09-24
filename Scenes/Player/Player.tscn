@@ -24,16 +24,14 @@
 [ext_resource type="Script" uid="uid://csflplj6bbh4x" path="res://Assets/Weapons/Scripts/WeaponStates/EmptyWeaponState.cs" id="22_8cj01"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_qbkls"]
-radius = 0.45
+radius = 0.4
 height = 1.8
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_i5acl"]
+radius = 0.4
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_ostoq"]
-radius = 0.45
-
-[sub_resource type="BoxMesh" id="BoxMesh_spxdj"]
-size = Vector3(0.06965332, 0.1, 0.1)
+radius = 0.4
 
 [node name="Player" type="CharacterBody3D" unique_id=219798193 node_paths=PackedStringArray("StandingCollision", "CrouchingCollision", "PlayerShapeCast", "PlayerCamera", "PlayerCameraController", "PlayerCameraComponent", "PlayerInteractionRaycast", "PlayerJumpComponent", "PlayerStepHandler", "PlayerWeaponContropller") groups=["player"]]
 collision_layer = 2
@@ -54,7 +52,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_qbkls")
 
 [node name="CrouchingCollision" type="CollisionShape3D" parent="." unique_id=1088101655]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
 shape = SubResource("SphereShape3D_i5acl")
 
 [node name="ShapeCast3D" type="ShapeCast3D" parent="." unique_id=436329733]
@@ -71,25 +69,6 @@ script = ExtResource("2_epg6k")
 [node name="InteractionRaycast" type="RayCast3D" parent="CameraController/Camera3D" unique_id=1139477176]
 target_position = Vector3(0, 0, -3)
 script = ExtResource("3_0u84n")
-
-[node name="StairWalker" type="Node3D" parent="." unique_id=1767386525]
-visible = false
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StairWalker" unique_id=1608464874]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0016951822, 0, -0.69833076)
-mesh = SubResource("BoxMesh_spxdj")
-
-[node name="StairRayCast3D" type="RayCast3D" parent="StairWalker" unique_id=363342032]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, -0.7)
-target_position = Vector3(0, -0.2, 0)
-
-[node name="FrontRayCast3D2" type="RayCast3D" parent="StairWalker" unique_id=245759526]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, -0.4)
-target_position = Vector3(0, 0, -0.4)
-
-[node name="FrontWallRayCast3D3" type="RayCast3D" parent="StairWalker" unique_id=906221185]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, -0.4)
-target_position = Vector3(0, 0, -0.4)
 
 [node name="Components" type="Node" parent="." unique_id=154801447]
 

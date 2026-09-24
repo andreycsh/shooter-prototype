@@ -3,9 +3,20 @@ using Godot;
 public partial class SimpleEnemy : BaseEnemy
 {
 
+    [ExportCategory("Properties")]
     [Export]
     public float FollowSpeed = 3.0f;
 
+    [Export]
+    private float acceleration = 3.0f;
+
+    [Export]
+    private float decceleartion = 1.0f;
+
+    [Export]
+    public float MeeleeRange = 1.0f;
+
+    [ExportCategory("References")]
     [Export]
     public NavigationAgent3D NavigationAgent;
 
@@ -15,9 +26,14 @@ public partial class SimpleEnemy : BaseEnemy
     [Export]
     public AnimationPlayer _AnimationPlayer;
 
+    [Export]
+    public AnimationTree _AnimationTree;
+
     public Node3D Target;
 
-    public override void _Ready()
+    public AnimationNodeStateMachinePlayback AnimationTreeState;
+
+    public override async void _Ready()
     {
         base._Ready();
 
@@ -26,11 +42,14 @@ public partial class SimpleEnemy : BaseEnemy
         healthComponent.Connect(HealthComponent.SignalName.Died, Callable.From(Die));
         NavigationAgent.Connect(NavigationAgent3D.SignalName.VelocityComputed, Callable.From<Vector3>(OnVelocityComputed));
 
-        if (_AnimationPlayer is not null)
+        AnimationTreeState = _AnimationTree.Get("parameters/playback").As<AnimationNodeStateMachinePlayback>();
+
+        /*GetTree().ProcessFrame += () =>
         {
-            _AnimationPlayer.Play("Fighting_Idle");
-            _AnimationPlayer.Seek(GD.RandRange(0.0f, _AnimationPlayer.CurrentAnimationLength));
-        }
+            _AnimationTree.Set("parameters/Idle/seek_request", GD.RandRange(0.0f, 1.0f));
+        };*/
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+        _AnimationTree.Set("parameters/Idle/seek_request", GD.RandRange(0.0f, 1.0f));
 
     }
 
@@ -43,11 +62,12 @@ public partial class SimpleEnemy : BaseEnemy
         }
 
         MoveAndSlide();
+        UpdateBlends();
     }
 
     public override void OnTriggered()
     {
-        GetNode("EnemyStateMachine").GetNode("FollowEnemyState").EmitSignal(NodeState.SignalName.TransitionState, nameof(EnemyStates.FollowEnemyState));
+        EmitFollowState();
     }
 
 
@@ -59,7 +79,13 @@ public partial class SimpleEnemy : BaseEnemy
 
     private void OnVelocityComputed(Vector3 safeVelocity)
     {
-        Velocity = Velocity with { X = safeVelocity.X, Z = safeVelocity.Z };
+        Vector3 targetVelocity = new Vector3(safeVelocity.X, Velocity.Y, safeVelocity.Z);
+        float accel = Velocity.Length() > 0.01f ? acceleration : decceleartion;
+        Velocity = Velocity with
+        {
+            X = Mathf.MoveToward(Velocity.X, targetVelocity.X, accel * (float)GetPhysicsProcessDeltaTime()),
+            Z = Mathf.MoveToward(Velocity.Z, targetVelocity.Z, accel * (float)GetPhysicsProcessDeltaTime())
+        };
     }
 
     private void OnDetectionAreaBodyEntered(Node3D body)
@@ -68,6 +94,24 @@ public partial class SimpleEnemy : BaseEnemy
         {
             OnTriggered();
         }
+    }
+
+    private void UpdateBlends()
+    {
+        float moveAmount = Velocity.Length();
+        moveAmount = (float)Mathf.Remap(moveAmount, 0.0, FollowSpeed, 0.0, 1.0);
+        _AnimationTree.Set("parameters/Follow/IdleChaseBlend/blend_position", moveAmount);
+    }
+
+    private void EmitFollowState()
+    {
+        GetNode("EnemyStateMachine").GetNode("FollowEnemyState").EmitSignal(NodeState.SignalName.TransitionState, nameof(EnemyStates.FollowEnemyState));
+    }
+
+    private void EmitAttackState()
+    {
+        GetNode("EnemyStateMachine").GetNode("AttackEnemyState").EmitSignal(NodeState.SignalName.TransitionState, nameof(EnemyStates.AttackEnemyState));
+
     }
 
 }

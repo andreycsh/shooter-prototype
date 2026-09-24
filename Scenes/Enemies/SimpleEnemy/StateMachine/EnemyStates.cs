@@ -1,5 +1,6 @@
 public enum EnemyStates
 {
     IdleEnemyState,
-    FollowEnemyState
+    FollowEnemyState,
+    AttackEnemyState
 }
