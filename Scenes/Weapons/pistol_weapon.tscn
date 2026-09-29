@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://h7fy5ac51olo"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_ostoq"]
-size = Vector3(0.04, 0.05, 0.35)
+[ext_resource type="PackedScene" uid="uid://dene1ijxlt420" path="res://Assets/Weapons/Models/HandGun/Glock.glb" id="1_1u7re"]
 
-[node name="PistolWeapon" type="MeshInstance3D" unique_id=489541166]
-mesh = SubResource("BoxMesh_ostoq")
+[node name="PistolWeapon" type="Node3D" unique_id=879114778]
+
+[node name="Handgun" parent="." unique_id=209029151 instance=ExtResource("1_1u7re")]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 0, 0)

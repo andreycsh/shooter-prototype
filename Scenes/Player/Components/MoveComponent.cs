@@ -42,21 +42,5 @@ public partial class MoveComponent : Node
 
         if (player.IsOnFloor())
             player.PlayerStepHandler.HandleStepClimbing();
-        /*if (player.InputDirection.Length() > 0.1)
-        {
-            Vector3 stairWalkerRotation = player.StairWalker.Rotation;
-            stairWalkerRotation.Y = (Mathf.Atan2(-player.InputDirection.X, -player.InputDirection.Y));
-            player.StairWalker.Rotation = stairWalkerRotation;
-
-            if(player.IsOnWall() && player.IsOnFloor())
-            {
-                float stepHeight = player.StairRaycast.GetCollisionPoint().Y - player.GlobalPosition.Y;
-                Vector3 playerGlobalPosition = player.GlobalPosition;
-                playerGlobalPosition.Y += stepHeight + 0.05f;
-                player.GlobalPosition = playerGlobalPosition;
-                player.Velocity = player.PreviousVelocity;
-            }
-        }*/
-        
     }
 }

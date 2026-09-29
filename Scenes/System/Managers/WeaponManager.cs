@@ -10,7 +10,6 @@ public partial class WeaponManager : Node
     [Export]
     public Dictionary<int, WeaponData> Weapons = [];
 
-    [Export]
     private Player player;
 
     private int currentSlot = 1;
@@ -18,6 +17,7 @@ public partial class WeaponManager : Node
     public override void _Ready()
     {
         Instance = this;
+        player = (Player)GetTree().GetFirstNodeInGroup("player");
     }
 
     public override void _UnhandledInput(InputEvent @event)

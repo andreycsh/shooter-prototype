@@ -33,7 +33,7 @@ public partial class StepHandlerComponent : Node
                 if (measureHeight > MIN_STEP_HEIGHT && measureHeight <= stepHeight && IsValidStepDirection(collision))
                 {
                     Vector3 playerPosition = player.GlobalPosition;
-                    playerPosition.Y += measureHeight + 0.1f;
+                    playerPosition.Y += measureHeight + 0.01f;
                     player.GlobalPosition = playerPosition;
                     player.Velocity = player.PreviousVelocity;
                     player.PlayerCameraComponent.SmoothStep(measureHeight);

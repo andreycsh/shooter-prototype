@@ -4,16 +4,16 @@ importer="scene"
 importer_version=1
 type="PackedScene"
 uid="uid://dene1ijxlt420"
-path="res://.godot/imported/Glock.glb-2858045f48e2c8ebae8819a775ddef30.scn"
+path="res://.godot/imported/Glock.glb-9de9ea29f7cc89f30f5f62a2b354b8f5.scn"
 
 [deps]
 
-source_file="res://Assets/HandGun/Glock.glb"
-dest_files=["res://.godot/imported/Glock.glb-2858045f48e2c8ebae8819a775ddef30.scn"]
+source_file="res://Assets/Weapons/Models/HandGun/Glock.glb"
+dest_files=["res://.godot/imported/Glock.glb-9de9ea29f7cc89f30f5f62a2b354b8f5.scn"]
 
 [params]
 
-nodes/root_type="Node"
+nodes/root_type="Node3D"
 nodes/root_name="Handgun"
 nodes/root_script=null
 mesh_library/use_node_names_as_mesh_names=false

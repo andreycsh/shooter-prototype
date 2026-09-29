@@ -23,7 +23,7 @@ public partial class WeaponController : Node
 
     public override void _Ready()
     {
-        if (CurrentWeapon != null)
+        if (CurrentWeapon is not null)
         {
             SpawnWeaponModel();
         }

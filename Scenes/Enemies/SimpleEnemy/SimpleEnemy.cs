@@ -44,10 +44,6 @@ public partial class SimpleEnemy : BaseEnemy
 
         AnimationTreeState = _AnimationTree.Get("parameters/playback").As<AnimationNodeStateMachinePlayback>();
 
-        /*GetTree().ProcessFrame += () =>
-        {
-            _AnimationTree.Set("parameters/Idle/seek_request", GD.RandRange(0.0f, 1.0f));
-        };*/
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
         _AnimationTree.Set("parameters/Idle/seek_request", GD.RandRange(0.0f, 1.0f));
 
@@ -113,5 +109,4 @@ public partial class SimpleEnemy : BaseEnemy
         GetNode("EnemyStateMachine").GetNode("AttackEnemyState").EmitSignal(NodeState.SignalName.TransitionState, nameof(EnemyStates.AttackEnemyState));
 
     }
-
 }

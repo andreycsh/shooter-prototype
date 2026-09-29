@@ -17,7 +17,7 @@ public partial class AttackEnemyState : NodeState
         {
             enemy.Velocity = Vector3.Zero;
             enemy.NavigationAgent.Velocity = Vector3.Zero;
-            GD.Print("2");
+            
             if (enemy.Target is not null)
             {
                 Vector3 direction = (enemy.Target.GlobalPosition - enemy.GlobalPosition).Normalized();
@@ -27,27 +27,9 @@ public partial class AttackEnemyState : NodeState
             }
             enemy.AnimationTreeState.Travel("Attack");
 
-            /*enemy._AnimationTree.AnimationFinished += (val) =>
-            {
-                if (enemy.Target is null)
-                    return;
-
-                float distance = enemy.GlobalPosition.DistanceTo(enemy.Target.GlobalPosition);
-                if (distance <= enemy.MeeleeRange)
-                {
-
-                }
-                else
-                {
-                    EmitSignal(SignalName.TransitionState, nameof(EnemyStates.AttackEnemyState));
-                }
-            };*/
-            await ToSignal(enemy.AnimationTreeState, AnimationTree.SignalName.AnimationFinished);
-            //distance = enemy.GlobalPosition.DistanceTo(enemy.Target.GlobalPosition);
-            //return;
+            await ToSignal(enemy._AnimationTree, AnimationTree.SignalName.AnimationFinished);
             enemy.AnimationTreeState.Travel("Idle");
             await ToSignal(GetTree().CreateTimer(0.5f), SceneTreeTimer.SignalName.Timeout);
-            //await ToSignal(enemy._AnimationTree, AnimationTree.SignalName.AnimationStarted);
 
         }
         EmitSignal(SignalName.TransitionState, nameof(EnemyStates.FollowEnemyState));
